@@ -44,7 +44,7 @@ const PaymentScreen = ({ history }) => {
         </Form.Group>
 
         <Button type="submit" variant="outline-info">
-          Continue <i class="fas fa-arrow-right"></i>
+          Continue <i className="fas fa-arrow-right"></i>
         </Button>
       </Form>
     </FormContainer>

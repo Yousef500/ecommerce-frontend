@@ -72,7 +72,7 @@ const ShippingScreen = ({ history }) => {
         </Form.Group>
 
         <Button type="submit" variant="outline-success">
-          Continue <i class="fas fa-long-arrow-alt-right"></i>
+          Continue <i className="fas fa-long-arrow-alt-right"></i>
         </Button>
       </Form>
     </FormContainer>

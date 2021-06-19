@@ -22,7 +22,7 @@ const ProfileScreen = ({ history }) => {
   const { userInfo } = userLogin;
 
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-  const { success } = userLogin;
+  const { success } = userUpdateProfile;
 
   useEffect(() => {
     if (!userInfo) {
