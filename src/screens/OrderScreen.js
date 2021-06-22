@@ -41,7 +41,6 @@ const OrderScreen = ({ match }) => {
     loading: loadingPay,
   } = orderPay;
 
-  
   useEffect(() => {
     if (!order || successPay || order._id !== Number(orderId)) {
       dispatch({ type: ORDER_PAY_RESET });
@@ -82,11 +81,14 @@ const OrderScreen = ({ match }) => {
                 <strong>Shipping: </strong>
                 {order.shippingAddress.address}, {order.shippingAddress.city}
                 {"  "}
-                {order.shippingAddress.postalCode}, {order.shippingAddress.country}
+                {order.shippingAddress.postalCode},{" "}
+                {order.shippingAddress.country}
               </p>
 
               {order.isDelivered ? (
-                <Message variant="success">Delivered at {order.deliveredAt}</Message>
+                <Message variant="success">
+                  Delivered at {order.deliveredAt}
+                </Message>
               ) : (
                 <Message variant="warning">Not Delivered</Message>
               )}
@@ -153,7 +155,9 @@ const OrderScreen = ({ match }) => {
               <ListGroup.Item>
                 <Row>
                   <Col>Item:</Col>
-                  <Col>${order.totalPrice - order.taxPrice - order.shippingPrice}</Col>
+                  <Col>
+                    ${order.totalPrice - order.taxPrice - order.shippingPrice}
+                  </Col>
                 </Row>
               </ListGroup.Item>
 

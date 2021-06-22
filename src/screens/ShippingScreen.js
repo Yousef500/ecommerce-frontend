@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 // import Loader from "../components/Loader";
 // import Message from "../components/Message";
 import { saveShippingAddress } from "../actions/cartActions";
-import FormContainer from "../components/FormContainer";
 import CheckoutSteps from "../components/CheckoutSteps";
+import FormContainer from "../components/FormContainer";
 
 const ShippingScreen = ({ history }) => {
   const cart = useSelector((state) => state.cart);
@@ -24,7 +24,7 @@ const ShippingScreen = ({ history }) => {
 
   return (
     <FormContainer>
-      <CheckoutSteps step1 step2/>
+      <CheckoutSteps step1 step2 />
       <h1>Shipping</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="address" className="pb-3">
