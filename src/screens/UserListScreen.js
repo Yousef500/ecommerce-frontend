@@ -1,8 +1,9 @@
+
 import React, { useEffect } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
-import { deleteUser, listUsers } from "../actions/userActions";
+import { deleteUser, listUsers } from '../actions/userActions';
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
@@ -27,11 +28,9 @@ const UserListScreen = ({ history }) => {
   }, [dispatch, history, success]);
 
   const deleteHandler = (id, name) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete the user: ${name} ?`
-    );
+    let confirmDelete = window.confirm(`Are you sure you want to delete the user: ${name} ?`)
     if (confirmDelete) {
-      dispatch(deleteUser(id));
+      dispatch(deleteUser(id))
     }
   };
 
@@ -68,7 +67,7 @@ const UserListScreen = ({ history }) => {
                   )}
                 </td>
                 <td>
-                  <LinkContainer to={`/admin/user/${user._id}`}>
+                  <LinkContainer to={`/admin/user/${user._id}/edit`}>
                     <Button variant="light" className="btn-sm">
                       <i className="fas fa-edit"></i>
                     </Button>

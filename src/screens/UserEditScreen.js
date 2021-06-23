@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getUserDetails, updateUser } from "../actions/userActions";
 import FormContainer from "../components/FormContainer";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { USER_UPDATE_RESET } from "../constants/userConstants";
 
-const UserEditScreen = ({ history }) => {
-  const userId = match.params.id;
+const UserEditScreen = ({ history, match }) => {
+  const userId = Number(match.params.id);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
@@ -15,88 +17,93 @@ const UserEditScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const userDetails = useSelector((state) => state.userDetails);
-  const { error, loading, userInfo } = userDetails;
+  const { error, loading, user } = userDetails;
+
+  const userUpdate = useSelector((state) => state.userUpdate);
+  const {
+    error: updateError,
+    loading: updateLoading,
+    success: updateSuccess,
+  } = userUpdate;
 
   useEffect(() => {
-    if (userInfo) {
-      history.push(redirect);
+    if (updateSuccess) {
+      dispatch({ type: USER_UPDATE_RESET });
+      history.push("/admin/userlist");
+    } else {
+      if (!user.name || user._id !== userId) {
+        dispatch(getUserDetails(userId));
+      } else {
+        setName(user.name);
+        setEmail(user.email);
+        setIsAdmin(user.isAdmin);
+      }
     }
-  }, [history, userInfo, redirect]);
+  }, [dispatch, userId, user, updateSuccess, history]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setMessage("Passwords do not match");
-    } else {
-      dispatch(register(name, email, password));
-    }
+    dispatch(
+      updateUser({
+        _id: userId,
+        name,
+        email,
+        isAdmin,
+      })
+    );
   };
 
   return (
-    <FormContainer>
-      <h1>Register</h1>
-      {message && <Message variant="danger">{message}</Message>}
-      {error && <Message variant="danger">{error}</Message>}
-      {loading && <Loader />}
-      <Form onSubmit={submitHandler}>
-        <Form.Group controlId="name" className="pb-3">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            required
-            type="name"
-            placeholder="Enter Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+    <div>
+      <Link to="/admin/userlist">Go Back</Link>
+      <FormContainer>
+        <h1>Edit User</h1>
 
-        <Form.Group controlId="email" className="pb-3">
-          <Form.Label>Email Address</Form.Label>
-          <Form.Control
-            required
-            type="email"
-            placeholder="Enter Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+        {updateLoading && <Loader />}
+        {updateError && <Message variant="danger">{updateError}</Message>}
 
-        <Form.Group controlId="password" className="pb-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            required
-            type="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+          <Form onSubmit={submitHandler}>
+            <Form.Group controlId="name" className="pb-3">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="name"
+                placeholder="Enter Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-        <Form.Group controlId="passwordConfirm" className="pb-3">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            required
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group controlId="email" className="pb-3">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-        <Button type="submit" variant="outline-info">
-          Register
-        </Button>
-      </Form>
+            <Form.Group controlId="isadmin" className="pb-3">
+              <Form.Check
+                type="checkbox"
+                label="Is Admin"
+                checked={isAdmin}
+                onChange={(e) => setIsAdmin(e.target.checked)}
+              ></Form.Check>
+            </Form.Group>
 
-      <Row className="py-3">
-        <Col>
-          Already have an account ?{" "}
-          <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
-            Sign In
-          </Link>
-        </Col>
-      </Row>
-    </FormContainer>
+            <Button type="submit" variant="outline-info">
+              Update
+            </Button>
+          </Form>
+        )}
+      </FormContainer>
+    </div>
   );
 };
 
