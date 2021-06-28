@@ -16,7 +16,7 @@ const OrderScreen = ({ match }) => {
 
   const addPayPalScript = () => {
     const clientId =
-      "AdD7dlTRCQ-I_7y5p7VFnxAlttabZJmOJ6HSFwZCpXuNlrR5--GU1OC8H4Hxui2o7HYB0UmztO4qon-M";
+      "AXP-ge3JNDvfGKad6hVn4HjjLcHcWCGYHcv316vcI8d1NhC9HPioBRkjYR8WoMxEoq4IOsJV83nCfWvp";
     const script = document.createElement("script");
     script.type = "text/javascript";
     script.source = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
@@ -156,7 +156,12 @@ const OrderScreen = ({ match }) => {
                 <Row>
                   <Col>Item:</Col>
                   <Col>
-                    ${order.totalPrice - order.taxPrice - order.shippingPrice}
+                    $
+                    {(
+                      order.totalPrice -
+                      order.taxPrice -
+                      order.shippingPrice
+                    ).toFixed(2)}
                   </Col>
                 </Row>
               </ListGroup.Item>
