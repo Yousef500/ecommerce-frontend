@@ -4,6 +4,9 @@ import {
   ORDER_CREATE_FAIL,
   ORDER_CREATE_REQUEST,
   ORDER_CREATE_SUCCESS,
+  ORDER_DELIVER_FAIL,
+  ORDER_DELIVER_REQUEST,
+  ORDER_DELIVER_SUCCESS,
   ORDER_DETAILS_FAIL,
   ORDER_DETAILS_REQUEST,
   ORDER_DETAILS_SUCCESS,
@@ -91,7 +94,7 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
     } = getState();
 
     const { data } = await axios.put(
-      `/api/orders/${orderid}/pay`,
+      `/api/orders/${orderid}/pay/`,
       paymentResult,
       {
         headers: {
@@ -107,6 +110,40 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_PAY_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const deliverOrder = (order) => async (dispatch, getState) => {
+  try {
+    const orderid = Number(order._id);
+    dispatch({ type: ORDER_DELIVER_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const { data } = await axios.put(
+      `/api/orders/${orderid}/deliver/`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+    );
+
+    dispatch({
+      type: ORDER_DELIVER_SUCCESS,
+      payload: data.isDelivered ? "Order has been delivered" : "Not delivered",
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_DELIVER_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail
