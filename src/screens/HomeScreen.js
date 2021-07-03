@@ -7,6 +7,7 @@ import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import Product from "../components/Product";
 import ProductCarousel from "../components/ProductCarousel";
+import SearchBox from "../components/SearchBox";
 
 const HomeScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -22,6 +23,8 @@ const HomeScreen = ({ history }) => {
   return (
     <div>
       {!keyword && <ProductCarousel />}
+      <SearchBox />
+
       <h1>Latest Products</h1>
       {loading ? (
         <Loader />
@@ -29,7 +32,7 @@ const HomeScreen = ({ history }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <div>
-          <Row className='mb-4'>
+          <Row className="mb-4">
             {products.map((prod) => (
               <Col key={prod._id} sm={12} md={6} lg={4} xl={3}>
                 <Product product={prod} />

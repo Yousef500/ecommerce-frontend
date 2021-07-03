@@ -5,11 +5,12 @@ import { LinkContainer } from "react-router-bootstrap";
 import {
   createProduct,
   deleteProduct,
-  listProducts,
+  listProducts
 } from "../actions/productActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
+import SearchBox from "../components/SearchBox";
 import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 const ProductListScreen = ({ history, match }) => {
@@ -78,6 +79,8 @@ const ProductListScreen = ({ history, match }) => {
         <Col>
           <h1>Products</h1>
         </Col>
+
+        <SearchBox />
 
         <Col className="text-right">
           <Button className="my-3" onClick={createProductHandler}>
