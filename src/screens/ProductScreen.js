@@ -6,11 +6,12 @@ import {
   Form,
   Image,
   ListGroup,
-  Row,
+  Row
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { listProductDetails } from "../actions/productActions";
+import { listProductDetails, reviewProduct } from "../actions/productActions";
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Rating from "../components/Rating";
@@ -35,9 +36,19 @@ const ProductScreen = ({ match, history }) => {
     success,
   } = productReviewCreate;
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(reviewProduct(match.params.id, { rating, comment }));
+  };
+
   useEffect(() => {
+    if (success) {
+      setRating(0);
+      setComment("");
+      dispatch({ type: PRODUCT_CREATE_RESET });
+    }
     dispatch(listProductDetails(match.params.id));
-  }, [dispatch, match.params.id]);
+  }, [dispatch, match.params.id, success]);
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qty=${qty}`);
@@ -153,9 +164,68 @@ const ProductScreen = ({ match, history }) => {
                   <ListGroup.Item key={rev._id}>
                     <strong>{rev.name}</strong>
                     <Rating value={rev.rating} color="#f8e825" />
-                    <p>{rev.createdAt}</p>
+                    <p>{rev.createdAt.substring(0, 10)}</p>
+                    <p>{rev.comment}</p>
                   </ListGroup.Item>
                 ))}
+
+                <ListGroup.Item>
+                  <h4>Write a review</h4>
+
+                  {loadingReview && <Loader />}
+
+                  {errorReview && (
+                    <Message variant="danger">{errorReview}</Message>
+                  )}
+
+                  {success && (
+                    <Message variant="success">Review Submitted</Message>
+                  )}
+
+                  {userInfo ? (
+                    <Form onSubmit={submitHandler}>
+                      <Form.Group controlId="rating">
+                        <Form.Label>Rating</Form.Label>
+                        <Form.Control
+                          as="select"
+                          value={rating}
+                          onChange={(e) => setRating(e.target.value)}
+                        >
+                          <option value="">Select...</option>
+                          <option value="1">1 - Poor</option>
+                          <option value="2">2 - Fair</option>
+                          <option value="3">3 - Good</option>
+                          <option value="4">4 - Very Good</option>
+                          <option value="5">5 - Excellent</option>
+                        </Form.Control>
+                      </Form.Group>
+
+                      <Form.Group controlId="comment">
+                        <Form.Label>Review</Form.Label>
+
+                        <Form.Control
+                          as="textarea"
+                          rows={5}
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
+
+                      <Button
+                        disabled={loadingReview}
+                        type="submit"
+                        variant="primary"
+                        block
+                      >
+                        Submit
+                      </Button>
+                    </Form>
+                  ) : (
+                    <Message variant="info">
+                      Please <Link to="/">Login</Link> to write a review
+                    </Message>
+                  )}
+                </ListGroup.Item>
               </ListGroup>
             </Col>
           </Row>
